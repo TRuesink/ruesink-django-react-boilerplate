@@ -24,11 +24,20 @@ import {
 } from '../store/selectors';
 import { Avatar, Divider, ListItemIcon } from '@mui/material';
 
-function Header(props) {
-  const [anchorEl, setAnchorEl] = useState(null);
+type Props = {
+  isAuthenticated: Boolean;
+  userEmail: String;
+  sideBarOpen: Boolean;
+  logoutRequest: () => any;
+  setSideMenu: (params: any) => any;
+};
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
+function Header(props: Props): JSX.Element {
+  const [anchorEl, setAnchorEl] = useState<HTMLInputElement | null>(null);
+
+  const handleMenu = (event: React.MouseEvent): void => {
+    const currentTarget = event.currentTarget as HTMLInputElement;
+    setAnchorEl(currentTarget);
   };
 
   const handleClose = () => {
@@ -67,10 +76,7 @@ function Header(props) {
             </Typography>
             <IconButton
               size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
+              onClick={(e) => handleMenu(e)}
               color="inherit"
             >
               <AccountCircle />
@@ -143,7 +149,7 @@ function Header(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: ReduxState): Object => ({
   isAuthenticated: selectIsAuthenticated(state),
   userEmail: selectUserEmail(state),
   sideBarOpen: selectSideBarOpen(state),

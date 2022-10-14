@@ -12,9 +12,13 @@ import {
   REGISTER_FAILURE,
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
+  LoginAction,
+  GetUserAction,
+  LogoutAction,
+  RegisterAction,
 } from '../actions/auth.actions';
 
-const INITIAL_STATE = {
+const initialState = {
   id: null,
   email: '',
   first_name: '',
@@ -25,7 +29,10 @@ const INITIAL_STATE = {
   error: null,
 };
 
-const authReducer = (state = INITIAL_STATE, action) => {
+const authReducer = (
+  state: AuthState = initialState,
+  action: LoginAction | GetUserAction | LogoutAction | RegisterAction
+): AuthState => {
   switch (action.type) {
     case LOGIN_REQUEST:
       return { ...state, requestStatus: REQUEST_STATUS.REQUESTED };
@@ -67,7 +74,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
       };
     case LOGOUT_SUCCESS:
       return {
-        ...INITIAL_STATE,
+        ...initialState,
         requestStatus: REQUEST_STATUS.REQUEST_SUCCESS,
       };
     case LOGOUT_FAILURE:
