@@ -1,6 +1,8 @@
-export const selectIsAuthenticated = (state: ReduxState) =>
-  state.auth.isAuthenticated;
-export const selectAuthorizationToken = (state: ReduxState) => state.auth.token;
-export const selectUserEmail = (state: ReduxState) => state.auth.email;
+import { RootState } from '../configureStore';
 
-export const selectSideBarOpen = (state: ReduxState) => state.home.sideBarOpen;
+export const selectIsAuthenticated = (state: RootState) =>
+  state.auth.isAuthenticated;
+export const selectAuthorizationToken = (state: RootState) => state.auth.token;
+export const selectUserEmail = (state: RootState) => state.auth.email;
+
+export const selectSideBarOpen = (state: RootState) => state.home.sideBarOpen;

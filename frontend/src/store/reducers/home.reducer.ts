@@ -1,12 +1,12 @@
 import { SET_SIDE_MENU, SetSideMenuAction } from '../actions/home.actions';
 
-const initialState = {
+const initialState: HomeState = {
   sideBarOpen: true,
 };
 
 const homeReducer = (
   state: HomeState = initialState,
-  action: SetSideMenuAction
+  action: SetSideMenuAction | any
 ): HomeState => {
   switch (action.type) {
     case SET_SIDE_MENU:

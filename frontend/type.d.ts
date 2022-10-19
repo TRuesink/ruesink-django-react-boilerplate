@@ -10,16 +10,18 @@ type AuthState = {
   first_name: String;
   last_name: String;
   token: NullableString;
-  isAuthenticated: Boolean;
+  isAuthenticated: boolean;
   requestStatus: String;
   error: NullableError;
 };
 
 type HomeState = {
-  sideBarOpen: Boolean;
+  sideBarOpen: boolean;
 };
 
-type ReduxState = {
-  auth: AuthState;
-  home: HomeState;
+type ApiUrls = {
+  user: string;
+  login: string;
+  logout: string;
+  register: string;
 };

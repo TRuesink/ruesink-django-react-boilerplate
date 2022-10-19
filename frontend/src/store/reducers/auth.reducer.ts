@@ -18,7 +18,7 @@ import {
   RegisterAction,
 } from '../actions/auth.actions';
 
-const initialState = {
+const initialState: AuthState = {
   id: null,
   email: '',
   first_name: '',
@@ -31,7 +31,7 @@ const initialState = {
 
 const authReducer = (
   state: AuthState = initialState,
-  action: LoginAction | GetUserAction | LogoutAction | RegisterAction
+  action: LoginAction | GetUserAction | LogoutAction | RegisterAction | any
 ): AuthState => {
   switch (action.type) {
     case LOGIN_REQUEST:
