@@ -3,22 +3,26 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import { Link as MuiLink } from '@mui/material';
+import { Link as MuiLink, SxProps } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
-import { connect } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom';
 
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { registerRequest } from '../store/actions/auth.actions';
+import { loginRequest } from '../store/actions/auth.actions';
 import { selectIsAuthenticated } from '../store/selectors';
+import { useAppDispatch, useAppSelector } from '../hooks';
 
-function Copyright(props) {
+type CopyrightProps = {
+  sx: SxProps;
+};
+
+function Copyright(props: CopyrightProps) {
   return (
     <Typography
       variant="body2"
@@ -37,46 +41,37 @@ function Copyright(props) {
 }
 
 const validationSchema = yup.object({
-  username: yup
-    .string('Enter your username')
-    .min(8, 'username must be at least 8 characters long')
-    .required('Username is required'),
   email: yup
-    .string('Enter your email')
+    .string()
     .email('Enter a valid email')
     .required('Email is required'),
   password: yup
-    .string('Enter your password')
+    .string()
     .min(8, 'Password should be of minimum 8 characters length')
     .required('Password is required'),
-  passwordConfirmation: yup
-    .string('Confirm your password')
-    .oneOf([yup.ref('password'), null], 'Passwords must match')
-    .required('Please re-enter your password'),
 });
 
-const Register = (props) => {
+const Login = () => {
+  const isAuthenticated = useAppSelector((state) =>
+    selectIsAuthenticated(state)
+  );
+  const dispatch = useAppDispatch();
   const formik = useFormik({
     initialValues: {
-      username: '',
       email: '',
       password: '',
-      passwordConfirmation: '',
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      props.registerRequest({
-        username: values.username,
-        email: values.email,
-        password: values.password,
-        passwordConfirmation: values.passwordConfirmation,
-      });
+      dispatch(
+        loginRequest({ email: values.email, password: values.password })
+      );
     },
   });
 
   return (
     <Container component="main" maxWidth="xs">
-      {props.isAuthenticated && <Navigate to="/" replace={true} />}
+      {isAuthenticated && <Navigate to="/" replace={true} />}
       <CssBaseline />
       <Box
         sx={{
@@ -90,7 +85,7 @@ const Register = (props) => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Register
+          Sign in
         </Typography>
         <Box
           component="form"
@@ -98,19 +93,6 @@ const Register = (props) => {
           noValidate
           sx={{ mt: 1 }}
         >
-          <TextField
-            margin="normal"
-            fullWidth
-            value={formik.values.username}
-            onChange={formik.handleChange}
-            error={formik.touched.username && Boolean(formik.errors.username)}
-            helperText={formik.touched.username && formik.errors.username}
-            id="username"
-            label="Username"
-            name="username"
-            autoComplete="username"
-            autoFocus
-          />
           <TextField
             margin="normal"
             fullWidth
@@ -122,6 +104,7 @@ const Register = (props) => {
             label="Email Address"
             name="email"
             autoComplete="email"
+            autoFocus
           />
           <TextField
             margin="normal"
@@ -136,36 +119,23 @@ const Register = (props) => {
             id="password"
             autoComplete="current-password"
           />
-          <TextField
-            margin="normal"
-            value={formik.values.passwordConfirmation}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.passwordConfirmation &&
-              Boolean(formik.errors.passwordConfirmation)
-            }
-            helperText={
-              formik.touched.passwordConfirmation &&
-              formik.errors.passwordConfirmation
-            }
-            fullWidth
-            name="passwordConfirmation"
-            label="Password Confirmation"
-            type="password"
-            id="passwordConfirmation"
-          />
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Register
+            Sign In
           </Button>
           <Grid container>
+            <Grid item xs>
+              <MuiLink href="#" variant="body2">
+                Forgot password?
+              </MuiLink>
+            </Grid>
             <Grid item>
-              <MuiLink component={Link} to="/login" variant="body2">
-                {'Already have an account? Sign In'}
+              <MuiLink component={Link} to="/register" variant="body2">
+                {"Don't have an account? Sign Up"}
               </MuiLink>
             </Grid>
           </Grid>
@@ -176,8 +146,4 @@ const Register = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: selectIsAuthenticated(state),
-});
-
-export default connect(mapStateToProps, { registerRequest })(Register);
+export default Login;

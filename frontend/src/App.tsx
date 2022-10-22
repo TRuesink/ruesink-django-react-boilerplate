@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
@@ -7,11 +6,17 @@ import Protected from './components/Protected';
 import { selectIsAuthenticated } from './store/selectors';
 import { getUserRequest } from './store/actions/auth.actions';
 import Register from './components/Register';
+import { useAppDispatch, useAppSelector } from './hooks';
 
-function App({ getUserRequest, isAuthenticated }) {
+function App() {
+  const isAuthenticated = useAppSelector((state) =>
+    selectIsAuthenticated(state)
+  );
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
-    getUserRequest();
-  }, [isAuthenticated, getUserRequest]);
+    dispatch(getUserRequest());
+  }, [isAuthenticated]);
 
   return (
     <BrowserRouter>
@@ -24,15 +29,11 @@ function App({ getUserRequest, isAuthenticated }) {
             </Protected>
           }
         ></Route>
-        <Route path="/login" exact element={<Login />} />
-        <Route path="/register" exact element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: selectIsAuthenticated(state),
-});
-
-export default connect(mapStateToProps, { getUserRequest })(App);
+export default App;

@@ -9,8 +9,10 @@ const authPersistConfig = {
   whitelist: ['token', 'isAuthenticated'],
 };
 
+const authPersistedReducer = persistReducer(authPersistConfig, authReducer);
+
 const rootReducer = {
-  auth: persistReducer(authPersistConfig, authReducer),
+  auth: authPersistedReducer,
   home: homeReducer,
 };
 

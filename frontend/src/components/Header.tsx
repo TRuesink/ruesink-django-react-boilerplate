@@ -13,7 +13,6 @@ import {
 } from '@mui/icons-material';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import { connect } from 'react-redux';
 
 import { logoutRequest } from '../store/actions/auth.actions';
 import { setSideMenu } from '../store/actions/home.actions';
@@ -23,12 +22,22 @@ import {
   selectUserEmail,
 } from '../store/selectors';
 import { Avatar, Divider, ListItemIcon } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../hooks';
 
-function Header(props) {
-  const [anchorEl, setAnchorEl] = useState(null);
+function Header(): JSX.Element {
+  const [anchorEl, setAnchorEl] = useState<HTMLInputElement | null>(null);
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
+  const isAuthenticated = useAppSelector((state) =>
+    selectIsAuthenticated(state)
+  );
+  const userEmail = useAppSelector((state) => selectUserEmail(state));
+  const sideBarOpen = useAppSelector((state) => selectSideBarOpen(state));
+
+  const dispatch = useAppDispatch();
+
+  const handleMenu = (event: React.MouseEvent): void => {
+    const currentTarget = event.currentTarget as HTMLInputElement;
+    setAnchorEl(currentTarget);
   };
 
   const handleClose = () => {
@@ -41,14 +50,14 @@ function Header(props) {
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
       <Toolbar>
-        {props.isAuthenticated && (
+        {isAuthenticated && (
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-            onClick={() => props.setSideMenu({ open: !props.sideBarOpen })}
+            onClick={() => dispatch(setSideMenu({ open: !sideBarOpen }))}
           >
             <MenuIcon />
           </IconButton>
@@ -56,21 +65,18 @@ function Header(props) {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Track My Standards
         </Typography>
-        {props.isAuthenticated && (
+        {isAuthenticated && (
           <Box
             sx={{
               display: { xs: 'none', sm: 'flex', alignItems: 'center' },
             }}
           >
             <Typography sx={{ marginRight: '1rem' }}>
-              Hi <strong>{props.userEmail}</strong>!
+              Hi <strong>{userEmail}</strong>!
             </Typography>
             <IconButton
               size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
+              onClick={(e) => handleMenu(e)}
               color="inherit"
             >
               <AccountCircle />
@@ -129,7 +135,7 @@ function Header(props) {
                 </ListItemIcon>
                 Settings
               </MenuItem>
-              <MenuItem onClick={() => props.logoutRequest()}>
+              <MenuItem onClick={() => dispatch(logoutRequest())}>
                 <ListItemIcon>
                   <Logout fontSize="small" />
                 </ListItemIcon>
@@ -143,10 +149,4 @@ function Header(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: selectIsAuthenticated(state),
-  userEmail: selectUserEmail(state),
-  sideBarOpen: selectSideBarOpen(state),
-});
-
-export default connect(mapStateToProps, { logoutRequest, setSideMenu })(Header);
+export default Header;

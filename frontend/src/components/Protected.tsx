@@ -1,7 +1,12 @@
 import React from 'react';
 import { Navigate } from 'react-router';
 
-const Protected = ({ isAuthenticated, children }) => {
+type Props = {
+  isAuthenticated: boolean;
+  children: JSX.Element;
+};
+
+const Protected = ({ isAuthenticated, children }: Props) => {
   if (isAuthenticated) {
     return children;
   } else {

@@ -10,24 +10,25 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import { connect } from 'react-redux';
-import { selectSideBarOpen } from '../store/selectors';
 import { SIDE_BAR_WIDTH } from '../constants/home';
+import { SxProps } from '@mui/material';
 
-const SideBar = (props) => {
+type Props = {
+  open: boolean | undefined;
+};
+
+const SideBar = (props: Props): JSX.Element => {
+  const sideBarStyle: SxProps = {
+    width: SIDE_BAR_WIDTH,
+    flexShrink: 0,
+    [`& .MuiDrawer-paper`]: {
+      width: SIDE_BAR_WIDTH,
+      boxSizing: 'border-box',
+    },
+  };
+
   return (
-    <Drawer
-      open={props.open}
-      variant="persistent"
-      sx={{
-        width: SIDE_BAR_WIDTH,
-        flexShrink: 0,
-        [`& .MuiDrawer-paper`]: {
-          width: SIDE_BAR_WIDTH,
-          boxSizing: 'border-box',
-        },
-      }}
-    >
+    <Drawer open={props.open} variant="persistent" sx={sideBarStyle}>
       <Toolbar />
       <Box sx={{ overflow: 'auto' }}>
         <List>
@@ -60,8 +61,4 @@ const SideBar = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  sideBarOpen: selectSideBarOpen(state),
-});
-
-export default connect(mapStateToProps)(SideBar);
+export default SideBar;

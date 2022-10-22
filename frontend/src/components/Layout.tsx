@@ -1,14 +1,22 @@
 import { Box, ThemeProvider, Toolbar } from '@mui/material';
 import React from 'react';
-import { connect } from 'react-redux';
+import { useAppSelector } from '../hooks';
 import { selectIsAuthenticated, selectSideBarOpen } from '../store/selectors';
 import theme from '../styles/theme';
 import Main from './BodyWrapper';
 import Header from './Header';
 import SideBar from './SideBar';
 
-const Layout = (props) => {
-  const menuOpen = props.sideBarOpen && props.isAuthenticated;
+type Props = {
+  children: JSX.Element;
+};
+
+const Layout = (props: Props) => {
+  const isAuthenticated = useAppSelector((state) =>
+    selectIsAuthenticated(state)
+  );
+  const sideBarOpen = useAppSelector((state) => selectSideBarOpen(state));
+  const menuOpen: boolean = sideBarOpen && isAuthenticated;
 
   return (
     <ThemeProvider theme={theme}>
@@ -24,9 +32,4 @@ const Layout = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: selectIsAuthenticated(state),
-  sideBarOpen: selectSideBarOpen(state),
-});
-
-export default connect(mapStateToProps)(Layout);
+export default Layout;
